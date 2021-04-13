@@ -1,0 +1,32 @@
+{
+  "name": "kukulis/b2bclient",
+  "type": "library",
+  "description": "b2bclient",
+  "keywords": [
+    "b2bclient"
+  ],
+  "version": "0.0.1",
+
+  "repositories": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/kukulis/b2bcommon"
+        }
+    ],
+
+  "require": {
+    "psr/log": "~1.0",
+    "guzzlehttp/guzzle": "*",
+    "kukulis/b2bcommon": "dev-main",
+    "phpunit/phpunit": "^6.4",
+    "jms/serializer": "*"
+  },
+  "autoload": {
+    "psr-4": {"Catalog\\B2b\\Client\\": "src/Catalog/B2b/Client"}
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  }
+}
