@@ -8,10 +8,8 @@
 
 namespace Catalog\B2b\Client\Exception;
 
-use \Exception;
 
-
-class ClientSystemException extends Exception
+class ClientSystemException extends ClientBaseException
 {
 
 }
