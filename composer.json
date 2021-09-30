@@ -5,7 +5,7 @@
   "keywords": [
     "b2bclient"
   ],
-  "version": "0.0.2",
+  "version": "0.0.4",
 
   "repositories": [
         {
@@ -17,12 +17,15 @@
   "require": {
     "psr/log": "~1.0",
     "guzzlehttp/guzzle": "*",
-    "kukulis/b2bcommon": "dev-main",
+    "kukulis/b2bcommon": "*||dev-main",
     "phpunit/phpunit": "^6.4",
     "jms/serializer": "*"
   },
   "autoload": {
-    "psr-4": {"Catalog\\B2b\\Client\\": "src/Catalog/B2b/Client"}
+    "psr-4": {
+      "Catalog\\B2b\\Client\\": "src/Catalog/B2b/Client",
+      "Sketis\\B2b\\Client\\": "src/Sketis/B2b/Client"
+    }
   },
   "autoload-dev": {
     "psr-4": {
