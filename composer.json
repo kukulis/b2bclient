@@ -5,7 +5,7 @@
   "keywords": [
     "b2bclient"
   ],
-  "version": "0.0.4",
+  "version": "0.1.1",
 
   "repositories": [
         {
@@ -29,7 +29,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/"
+      "Catalog\\B2b\\Client\\Tests\\": "tests/"
     }
   }
 }

@@ -6,7 +6,7 @@
  * Time: 11:41
  */
 
-namespace Tests;
+namespace Catalog\B2b\Client\Tests;
 
 
 use Psr\Log\LoggerInterface;

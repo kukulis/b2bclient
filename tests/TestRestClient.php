@@ -1,13 +1,6 @@
 <?php
-/**
- * TestRestClient.php
- * Created by Giedrius Tumelis.
- * Date: 2021-04-12
- * Time: 16:22
- */
 
-namespace Tests;
-
+namespace Catalog\B2b\Client\Tests;
 
 use Catalog\B2b\Client\RestClient;
 use GuzzleHttp\Client;
@@ -19,7 +12,7 @@ class TestRestClient extends TestCase
     public function testGetRoots() {
         $guzzle = new Client();
         $logger = new SimpleLogger();
-        $baseUrl = 'http://gtcatalog.dv';
+        $baseUrl = 'http://catalog_web';
 
         $serializer = SerializerBuilder::create()->build();
 
@@ -34,7 +27,7 @@ class TestRestClient extends TestCase
     public function testGetTree() {
         $guzzle = new Client();
         $logger = new SimpleLogger();
-        $baseUrl = 'http://gtcatalog.dv';
+        $baseUrl = 'http://catalog_web';
 
         $serializer = SerializerBuilder::create()->build();
 
