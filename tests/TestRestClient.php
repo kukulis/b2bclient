@@ -3,6 +3,7 @@
 namespace Catalog\B2b\Client\Tests;
 
 use Catalog\B2b\Client\RestClient;
+use Catalog\B2b\Client\Test\SimpleLogger;
 use GuzzleHttp\Client;
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;

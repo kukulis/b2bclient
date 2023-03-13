@@ -1,13 +1,6 @@
 <?php
-/**
- * SimpleLogger.php
- * Created by Giedrius Tumelis.
- * Date: 2021-04-13
- * Time: 11:41
- */
 
-namespace Catalog\B2b\Client\Tests;
-
+namespace Catalog\B2b\Client\Test;
 
 use Psr\Log\LoggerInterface;
 
