@@ -37,4 +37,5 @@ class TestRestClient extends TestCase
         $this->assertGreaterThan(0, count($categories));
         var_dump ( $categories );
     }
+
 }

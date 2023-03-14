@@ -26,6 +26,7 @@ use JMS\Serializer\Exception\Exception as SerializeException;
 use JMS\Serializer\Serializer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Sketis\PrekesBundle\Data\TmpPakuote;
 
 
 class RestClient
@@ -34,6 +35,7 @@ class RestClient
     const CATEGORY_CODE_PLACEHOLDER = 'CATEGORY_CODE';
     const CATEGORIES_ROOTS_URI = "/api/v3/categories_roots";
     const CATEGORIES_TREE_URI = "/api/v3/category_tree/CATEGORY_CODE/LOCALE";
+    const PACKAGES_URI = '/api/v3/packages';
 
     const ACCEPT_JSON = 'application/json';
 
@@ -198,10 +200,32 @@ class RestClient
         return $parseResult;
     }
 
+    /**
+     *
+     * @return TmpPakuote[]
+     */
     public function getPackages(?string $fromNomnr, int $limit = 500): array
     {
-        // TODO
+        $url = $this->baseUrl . self::PACKAGES_URI;
+        $requestParams =
+            [
+                'headers' => ['Accept' => self::ACCEPT_JSON],
+                'query'=> [
+                    'fromNomnr' => $fromNomnr,
+                    'limit' =>$limit,
+                ]
+            ];
 
-        return [];
+        $res = $this->guzzle->request('get', $url, $requestParams);
+
+        /** @var string[] $data */
+        $data = $this->handleResponse($res, RestResult::class);
+
+        /** @var TmpPakuote[] $tmpPakuotes */
+        $tmpPakuotes = $this->serializer->fromArray($data, sprintf( 'array<%s>',  TmpPakuote::class) );
+
+        return $tmpPakuotes;
     }
+
+
 }
