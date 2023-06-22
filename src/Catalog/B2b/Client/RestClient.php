@@ -35,6 +35,7 @@ class RestClient
     const CATEGORY_CODE_PLACEHOLDER = 'CATEGORY_CODE';
     const CATEGORIES_ROOTS_URI = "/api/v3/categories_roots";
     const CATEGORIES_TREE_URI = "/api/v3/category_tree/CATEGORY_CODE/LOCALE";
+    const CATEGORIES_LIST_URI ='/api/v3/categories/LANGUAGE';
     const PACKAGES_URI = '/api/v3/packages';
 
     const ACCEPT_JSON = 'application/json';
@@ -227,5 +228,7 @@ class RestClient
         return $tmpPakuotes;
     }
 
-
+    public function getCategoriesList() {
+        // TODO
+    }
 }
