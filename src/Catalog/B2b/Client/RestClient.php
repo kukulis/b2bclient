@@ -228,7 +228,26 @@ class RestClient
         return $tmpPakuotes;
     }
 
-    public function getCategoriesList() {
-        // TODO
+    /**
+     * @return Category[]
+     */
+    public function getCategoriesList($lang, $offset, $limit): array {
+        $url = $this->baseUrl . str_replace( 'LANGUAGE', $lang,  self::CATEGORIES_LIST_URI );
+
+        $requestParams =
+            [
+                'headers' => ['Accept' => self::ACCEPT_JSON],
+                'query'=> [
+                    'offset' => $offset,
+                    'limit' =>$limit,
+                ]
+            ];
+
+        $res = $this->guzzle->request('get', $url, $requestParams);
+
+        /** @var Category[] $data */
+        $data = $this->handleResponse($res, CategoriesRestResult::class);
+
+        return $data;
     }
 }
