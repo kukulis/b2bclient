@@ -1,15 +1,9 @@
 <?php
-/**
- * RestClient.php
- * Created by Giedrius Tumelis.
- * Date: 2021-04-12
- * Time: 16:21
- */
 
 namespace Catalog\B2b\Client;
 
-
 use Catalog\B2b\Client\Data\CategoriesRestResult;
+use Catalog\B2b\Client\Data\LanguagesRestResult;
 use Catalog\B2b\Client\Data\ParseResult;
 use Catalog\B2b\Client\Exception\ClientAccessException;
 use Catalog\B2b\Client\Exception\ClientErrorException;
@@ -17,6 +11,7 @@ use Catalog\B2b\Client\Exception\ClientSystemException;
 use Catalog\B2b\Client\Exception\ClientValidateException;
 use Catalog\B2b\Client\Helpers\RequestHelper;
 use Catalog\B2b\Common\Data\Catalog\Category;
+use Catalog\B2b\Common\Data\Catalog\Language;
 use Catalog\B2b\Common\Data\Rest\ErrorResponse;
 use Catalog\B2b\Common\Data\Rest\RestResult;
 use Exception;
@@ -28,14 +23,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Sketis\PrekesBundle\Data\TmpPakuote;
 
-
 class RestClient
 {
     const LOCALE_PLACEHOLDER = 'LOCALE';
     const CATEGORY_CODE_PLACEHOLDER = 'CATEGORY_CODE';
     const CATEGORIES_ROOTS_URI = "/api/v3/categories_roots";
     const CATEGORIES_TREE_URI = "/api/v3/category_tree/CATEGORY_CODE/LOCALE";
-    const CATEGORIES_LIST_URI ='/api/v3/categories/LANGUAGE';
+    const CATEGORIES_LIST_URI = '/api/v3/categories/LANGUAGE';
+    const LANGUAGES_LIST_URI = '/api/v3/languages';
     const PACKAGES_URI = '/api/v3/packages';
 
     const ACCEPT_JSON = 'application/json';
@@ -211,9 +206,9 @@ class RestClient
         $requestParams =
             [
                 'headers' => ['Accept' => self::ACCEPT_JSON],
-                'query'=> [
+                'query' => [
                     'fromNomnr' => $fromNomnr,
-                    'limit' =>$limit,
+                    'limit' => $limit,
                 ]
             ];
 
@@ -223,7 +218,7 @@ class RestClient
         $data = $this->handleResponse($res, RestResult::class);
 
         /** @var TmpPakuote[] $tmpPakuotes */
-        $tmpPakuotes = $this->serializer->fromArray($data, sprintf( 'array<%s>',  TmpPakuote::class) );
+        $tmpPakuotes = $this->serializer->fromArray($data, sprintf('array<%s>', TmpPakuote::class));
 
         return $tmpPakuotes;
     }
@@ -231,15 +226,16 @@ class RestClient
     /**
      * @return Category[]
      */
-    public function getCategoriesList($lang, $offset, $limit): array {
-        $url = $this->baseUrl . str_replace( 'LANGUAGE', $lang,  self::CATEGORIES_LIST_URI );
+    public function getCategoriesList($lang, $offset, $limit): array
+    {
+        $url = $this->baseUrl . str_replace('LANGUAGE', $lang, self::CATEGORIES_LIST_URI);
 
         $requestParams =
             [
                 'headers' => ['Accept' => self::ACCEPT_JSON],
-                'query'=> [
+                'query' => [
                     'offset' => $offset,
-                    'limit' =>$limit,
+                    'limit' => $limit,
                 ]
             ];
 
@@ -247,6 +243,23 @@ class RestClient
 
         /** @var Category[] $data */
         $data = $this->handleResponse($res, CategoriesRestResult::class);
+
+        return $data;
+    }
+
+    public function getLanguagesList(): array
+    {
+        $url = $this->baseUrl . self::LANGUAGES_LIST_URI;
+
+        $requestParams =
+            [
+                'headers' => ['Accept' => self::ACCEPT_JSON],
+            ];
+
+        $res = $this->guzzle->request('get', $url, $requestParams);
+
+        /** @var Language[] $data */
+        $data = $this->handleResponse($res, LanguagesRestResult::class);
 
         return $data;
     }
