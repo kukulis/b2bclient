@@ -5,6 +5,7 @@ namespace Catalog\B2b\Client;
 use Catalog\B2b\Client\Data\CategoriesRestResult;
 use Catalog\B2b\Client\Data\LanguagesRestResult;
 use Catalog\B2b\Client\Data\ParseResult;
+use Catalog\B2b\Client\Data\ProductRestResult;
 use Catalog\B2b\Client\Exception\ClientAccessException;
 use Catalog\B2b\Client\Exception\ClientErrorException;
 use Catalog\B2b\Client\Exception\ClientSystemException;
@@ -32,6 +33,7 @@ class RestClient
     const CATEGORIES_LIST_URI = '/api/v3/categories/LANGUAGE';
     const LANGUAGES_LIST_URI = '/api/v3/languages';
     const PACKAGES_URI = '/api/v3/packages';
+    const PRODUCTS_URI = '/api/v3/products/LOCALE';
 
     const ACCEPT_JSON = 'application/json';
 
@@ -72,26 +74,28 @@ class RestClient
      * @throws ClientSystemException
      * @throws ClientValidateException
      */
-    public function getCategoriesRoots()
+    public function getProducts(array $skus, $locale = 'en')
     {
-        $url = $this->baseUrl . self::CATEGORIES_ROOTS_URI;
-        $requestParams =
-            [
-                'headers' => ['Accept' => self::ACCEPT_JSON]
-            ];
+        $endpoint = str_replace(self::LOCALE_PLACEHOLDER, $locale, self::PRODUCTS_URI);
+        $requestUrl = $this->baseUrl . $endpoint;
 
-        $res = null;
+        $headers = [
+            'Accept' => self::ACCEPT_JSON,
+            'Content-Type' => 'application/json'
+        ];
+
+        $body = json_encode($skus);
+
         try {
-            $res = $this->guzzle->request('get', $url, $requestParams);
-        } catch (GuzzleException $e) {
-            throw new ClientErrorException($e->getMessage());
+            $response = $this->guzzle->request('post', $requestUrl, [
+                'headers' => $headers,
+                'body' => $body
+            ]);
+        } catch (GuzzleException $exception) {
+            throw new ClientErrorException($exception->getMessage());
         }
 
-        $hintType = RestResult::class;
-
-        /** @var string[] $data */
-        $data = $this->handleResponse($res, $hintType);
-        return $data;
+        return $this->handleResponse($response, ProductRestResult::class);
     }
 
     /**
@@ -137,19 +141,15 @@ class RestClient
      */
     private function handleResponse(ResponseInterface $response, string $hintType)
     {
-        $contents = '';
-        if ($response->getBody() != null) {
-            $contents = $response->getBody()->getContents();
-        }
+        $contents = $response->getBody()->getContents() ?? '';
 
         $parseResult = $this->parseResponse($contents, $hintType);
 
-        if ($parseResult->restResult != null) {
+        if (isset($parseResult->restResult)) {
             return $parseResult->restResult->data;
         }
 
-        // -- remaining error handling ---
-        if ($parseResult->errorResponse != null) {
+        if (isset($parseResult->errorResponse)) {
             RequestHelper::responseToException($parseResult->errorResponse, $response->getStatusCode());
         }
 
@@ -161,8 +161,8 @@ class RestClient
         );
         $exceptionsMessagesStr = join(",", $exceptionsMessages);
 
-        // in this place means, that response was unrecognized
         RequestHelper::handleUnrecognizedResponse($response->getStatusCode(), $exceptionsMessagesStr, $contents);
+
         return [];
     }
 
