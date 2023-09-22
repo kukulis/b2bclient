@@ -68,7 +68,7 @@ class RestClient
 
 
     /**
-     * @return string[]
+     * @return string[] TODO different type
      * @throws ClientAccessException
      * @throws ClientErrorException
      * @throws ClientSystemException
