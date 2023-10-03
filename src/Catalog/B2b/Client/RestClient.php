@@ -68,13 +68,12 @@ class RestClient
 
 
     /**
-     * @return string[] TODO different type
      * @throws ClientAccessException
      * @throws ClientErrorException
      * @throws ClientSystemException
      * @throws ClientValidateException
      */
-    public function getProducts(array $skus, $locale = 'en')
+    public function getProducts(array $skus, $locale = 'en'): array
     {
         $endpoint = str_replace(self::LOCALE_PLACEHOLDER, $locale, self::PRODUCTS_URI);
         $requestUrl = $this->baseUrl . $endpoint;
@@ -86,7 +85,9 @@ class RestClient
 
         $body = json_encode($skus);
 
+
         try {
+            $this->logger->debug('RestClient::getProducts() request url: ' . $requestUrl);
             $response = $this->guzzle->request('post', $requestUrl, [
                 'headers' => $headers,
                 'body' => $body
