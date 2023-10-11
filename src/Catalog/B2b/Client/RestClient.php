@@ -87,7 +87,7 @@ class RestClient
 
 
         try {
-            $this->logger->error('RestClient::getProducts() request url: ' . $requestUrl);
+            $this->logger->debug('RestClient::getProducts() request url: ' . $requestUrl);
             $response = $this->guzzle->request('post', $requestUrl, [
                 'headers' => $headers,
                 'body' => $body
