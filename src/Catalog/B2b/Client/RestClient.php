@@ -303,4 +303,9 @@ class RestClient
             throw new ClientErrorException($exception->getMessage());
         }
     }
+
+    public function getBaseUrl(): string
+    {
+        return $this->baseUrl;
+    }
 }
