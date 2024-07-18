@@ -33,6 +33,7 @@ class RestClient
     const CATEGORIES_TREE_URI = "/api/v3/category_tree/CATEGORY_CODE/LOCALE";
     const CATEGORIES_LIST_URI = '/api/v3/categories/LANGUAGE';
     const LANGUAGES_LIST_URI = '/api/v3/languages';
+    const SKUS_LIST_URI = '/api/v3/skus';
     const PACKAGES_URI = '/api/v3/packages';
     const PRODUCTS_URI = '/api/v3/products/LOCALE';
     const PRODUCTS_UPDATE_SPECIAL = '/api/v3/products_update_special';
@@ -90,10 +91,14 @@ class RestClient
 
         try {
             $this->logger->debug('RestClient::getProducts() request url: ' . $requestUrl);
-            $response = $this->guzzle->request('post', $requestUrl, [
-                'headers' => $headers,
-                'body' => $body
-            ]);
+            $response = $this->guzzle->request(
+                'post',
+                $requestUrl,
+                [
+                    'headers' => $headers,
+                    'body' => $body
+                ]
+            );
         } catch (GuzzleException $exception) {
             throw new ClientErrorException($exception->getMessage());
         }
@@ -271,7 +276,8 @@ class RestClient
     /**
      * @param Product[] $catalogProducts
      */
-    public function productsUpdateSpecialFields (array $catalogProducts) : int {
+    public function productsUpdateSpecialFields(array $catalogProducts): int
+    {
         $url = $this->baseUrl . self::PRODUCTS_UPDATE_SPECIAL;
 
         $headers = [
@@ -282,23 +288,26 @@ class RestClient
         $body = $this->serializer->serialize($catalogProducts, 'json');
 
         try {
-            $response = $this->guzzle->request('post', $url, [
-                'headers' => $headers,
-                'body' => $body
-            ]);
+            $response = $this->guzzle->request(
+                'post',
+                $url,
+                [
+                    'headers' => $headers,
+                    'body' => $body
+                ]
+            );
 
             $contents = $response->getBody()->getContents();
 
             $result = json_decode($contents);
 
-            if ( is_scalar($result)) {
+            if (is_scalar($result)) {
                 return $result;
             }
 
-            $this->logger->warning('Strange response from catalog:'.$contents);
+            $this->logger->warning('Strange response from catalog:' . $contents);
 
             return 0;
-
         } catch (GuzzleException $exception) {
             throw new ClientErrorException($exception->getMessage());
         }
@@ -307,5 +316,23 @@ class RestClient
     public function getBaseUrl(): string
     {
         return $this->baseUrl;
+    }
+
+    public function getSkus(string $fromSku, int $limit): array
+    {
+        $url = $this->baseUrl . self::SKUS_LIST_URI;
+
+        $requestParams =
+            [
+                'headers' => ['Accept' => self::ACCEPT_JSON],
+                'query' => ['fromsku' => $fromSku, 'limit' => $limit],
+            ];
+
+        $res = $this->guzzle->request('get', $url, $requestParams);
+
+        /** @var string[] $skus */
+        $skus = $this->handleResponse($res, RestResult::class );
+
+        return $skus;
     }
 }
