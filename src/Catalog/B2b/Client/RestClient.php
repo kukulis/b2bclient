@@ -71,14 +71,14 @@ class RestClient
 
 
     /**
-     * @throws ClientAccessException
+     * @return Product[]
      * @throws ClientErrorException
      * @throws ClientSystemException
      * @throws ClientValidateException
      *
-     * @return Product[]
+     * @throws ClientAccessException
      */
-    public function getProducts(array $skus, $locale = 'en'): array
+    public function getProducts(array $skus, $locale = 'en', $skipCategories = false): array
     {
         $endpoint = str_replace(self::LOCALE_PLACEHOLDER, $locale, self::PRODUCTS_URI);
         $requestUrl = $this->baseUrl . $endpoint;
@@ -98,7 +98,8 @@ class RestClient
                 $requestUrl,
                 [
                     'headers' => $headers,
-                    'body' => $body
+                    'body' => $body,
+                    'query' => ['skipCategories' => $skipCategories]
                 ]
             );
         } catch (GuzzleException $exception) {
@@ -333,7 +334,7 @@ class RestClient
         $res = $this->guzzle->request('get', $url, $requestParams);
 
         /** @var string[] $skus */
-        $skus = $this->handleResponse($res, RestResult::class );
+        $skus = $this->handleResponse($res, RestResult::class);
 
         return $skus;
     }
