@@ -75,6 +75,8 @@ class RestClient
      * @throws ClientErrorException
      * @throws ClientSystemException
      * @throws ClientValidateException
+     *
+     * @return Product[]
      */
     public function getProducts(array $skus, $locale = 'en'): array
     {
