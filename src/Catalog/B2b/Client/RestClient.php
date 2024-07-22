@@ -279,13 +279,14 @@ class RestClient
     /**
      * @param Product[] $catalogProducts
      */
-    public function productsUpdateSpecialFields(array $catalogProducts): int
+    public function productsUpdateSpecialFields(array $catalogProducts, string $secretToken): int
     {
         $url = $this->baseUrl . self::PRODUCTS_UPDATE_SPECIAL;
 
         $headers = [
             'Accept' => self::ACCEPT_JSON,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'secret-token' => $secretToken,
         ];
 
         $body = $this->serializer->serialize($catalogProducts, 'json');
