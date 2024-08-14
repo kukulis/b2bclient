@@ -54,6 +54,8 @@ class RestClient
     /** @var Serializer */
     protected $serializer;
 
+    protected bool $verify = true;
+
     /**
      * RestClient constructor.
      * @param LoggerInterface $logger
@@ -99,7 +101,8 @@ class RestClient
                 [
                     'headers' => $headers,
                     'body' => $body,
-                    'query' => ['skipCategories' => $skipCategories]
+                    'query' => ['skipCategories' => $skipCategories],
+                    'verify' => $this->verify,
                 ]
             );
         } catch (GuzzleException $exception) {
@@ -220,7 +223,8 @@ class RestClient
                 'query' => [
                     'fromNomnr' => $fromNomnr,
                     'limit' => $limit,
-                ]
+                ],
+                'verify' => $this->verify,
             ];
 
         $res = $this->guzzle->request('get', $url, $requestParams);
@@ -247,7 +251,9 @@ class RestClient
                 'query' => [
                     'offset' => $offset,
                     'limit' => $limit,
-                ]
+                ],
+                'verify' => $this->verify,
+
             ];
 
         $res = $this->guzzle->request('get', $url, $requestParams);
@@ -297,8 +303,9 @@ class RestClient
                 $url,
                 [
                     'headers' => $headers,
-                    'body' => $body
-                ]
+                    'body' => $body,
+                    'verify' => $this->verify,
+                ],
             );
 
             $contents = $response->getBody()->getContents();
@@ -330,6 +337,7 @@ class RestClient
             [
                 'headers' => ['Accept' => self::ACCEPT_JSON],
                 'query' => ['fromsku' => $fromSku, 'limit' => $limit],
+                'verify' => $this->verify,
             ];
 
         $res = $this->guzzle->request('get', $url, $requestParams);
@@ -338,5 +346,16 @@ class RestClient
         $skus = $this->handleResponse($res, RestResult::class);
 
         return $skus;
+    }
+
+    public function isVerify(): bool
+    {
+        return $this->verify;
+    }
+
+    public function setVerify(bool $verify): RestClient
+    {
+        $this->verify = $verify;
+        return $this;
     }
 }
